@@ -8,6 +8,7 @@ import os
 import re
 import tempfile
 import shutil
+import glob
 
 from enb import icompression
 import enb
@@ -195,6 +196,9 @@ class LCFramework(icompression.WrapperCodec, icompression.LosslessCodec):
         return f"LC ({self.param_dict['combination']})"
 
     def __delete__(self, instance):
-        """The codec is responsible for cleaning up its temporary directory.
+        """The codec is responsible for cleaning up its temporary directory and generated files.
         """
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
+        csv_files = glob.glob(os.path.join(os.getcwd(), f"*.CR{self.combination_len}.csv"))
+        for file_path in csv_files:
+            os.remove(file_path)
